@@ -1,13 +1,15 @@
 const fs = require('fs');
+var posts = [];
+var categories = [];
 
 function initialize() {
     return new Promise((resolve, reject) => {
-      fs.readFile('./data/posts.json', 'utf8', (err, data) => {
+      fs.readFile('./data/posts.json', (err, data) => {
         if (err) {
           reject("unable to read file");
         } else {
           posts = JSON.parse(data);
-          fs.readFile('./data/categories.json', 'utf8', (err, data) => {
+          fs.readFile('./data/categories.json', (err, data) => {
             if (err) {
               reject("unable to read file");
             } else {
@@ -23,7 +25,7 @@ function initialize() {
 
 function getPublishedPosts() {
   return new Promise((resolve, reject) => {
-    fs.readFile('./data/posts.json', 'utf-8', (err, data) => {
+    fs.readFile('./data/posts.json',(err, data) => {
       if (err) {
         reject(err);
       }
@@ -36,7 +38,7 @@ function getPublishedPosts() {
 
 function getAllPosts() {
   return new Promise((resolve, reject) => {
-    fs.readFile('./data/posts.json', 'utf-8', (err, data) => {
+    fs.readFile('./data/posts.json', (err, data) => {
       if (err) {
         reject(err);
       }
@@ -47,7 +49,7 @@ function getAllPosts() {
 
 function getCategories() {
   return new Promise((resolve, reject) => {
-    fs.readFile('./data/categories.json', 'utf-8', (err, data) => {
+    fs.readFile('./data/categories.json',(err, data) => {
       if (err) {
         reject(err);
       }
