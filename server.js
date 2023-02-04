@@ -5,7 +5,7 @@
 * 
 *  Name: Allan Mathew John Student ID: 159852219 Date: 2-2-2023
 *
-*  Online (Cyclic) Link: ________________________________________________________
+*  Online (Cyclic) Link: https://breakable-hem-ray.cyclic.app
 *
 ********************************************************************************/ 
 
@@ -16,7 +16,6 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
 
-app.use(express.static(path.join(__dirname, 'views')));
 app.use(express.static('public')); 
 
 app.get('/', (req, res) => {
