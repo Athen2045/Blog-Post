@@ -1,3 +1,14 @@
+/*********************************************************************************
+*  WEB322 – Assignment 02
+*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source 
+*  (including 3rd party web sites) or distributed to other students.
+* 
+*  Name: Allan Mathew John Student ID: 159852219 Date: 2-2-2023
+*
+*  Online (Cyclic) Link: ________________________________________________________
+*
+********************************************************************************/ 
+
 const blogService = require('./blog-service');
 const express = require('express');
 const path = require('path');
