@@ -17,7 +17,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 app.use(express.static(path.join(__dirname, 'views')));
-app.use(express.static(path.join(__dirname, 'css')));
+app.use(express.static('public')); 
 
 app.get('/', (req, res) => {
   res.redirect('/about');
@@ -60,13 +60,18 @@ app.get('/categories', (req, res) => {
 
 
 app.use((req, res) => {
-  res.status(404).send("Page Not Found");
+  res.status(404).send(__dirname + "Page Not Found");
 });
 
 app.listen(8080, () => {
   console.log("Server started on http://localhost:8080");
 });
 
-app.listen(port, () => {
-  console.log(`Express http server listening on port ${port}`);
-});
+blogService.initialize().then(()=>{
+  app.listen(HTTP_PORT, () => { 
+      console.log('Express http server listening on port: ' + HTTP_PORT); 
+  });
+}).catch((err)=>{
+  console.log('Error: promise cant be fulfilled');
+})
+
