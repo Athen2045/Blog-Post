@@ -1,3 +1,4 @@
+//blog-service.js
 const fs = require('fs');
 var posts = [];
 var categories = [];
@@ -58,9 +59,23 @@ function getCategories() {
     })
 }
 
+function addPost(postData) {
+    return new Promise((resolve, reject) => {
+      if (!postData.published) {
+        postData.published = false;
+      } else {
+        postData.published = true;
+      }
+      postData.id = posts.length + 1;
+      posts.push(postData);
+      resolve(postData);
+    });
+  }
+
 module.exports = {
     initialize,
   getPublishedPosts,
   getAllPosts,
-  getCategories
+  getCategories,
+  addPost
 };
