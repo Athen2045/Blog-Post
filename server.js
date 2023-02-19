@@ -51,15 +51,34 @@ app.get('/blog', (req, res) => {
 });
 
 app.get('/posts', (req, res) => {
-  blogService.getAllPosts()
-    .then(data => {
-      res.json(data);
-    })
-    .catch(err => {
-      res.json({message: err});
-    });
+  if (req.query.category) {
+    const category = parseInt(req.query.category);
+    blogService.getPostsByCategory(category)
+      .then(data => {
+        res.json(data);
+      })
+      .catch(err => {
+        res.json({message: err});
+      });
+  } else if (req.query.minDate) {
+    const minDateStr = req.query.minDate;
+    blogService.getPostsByMinDate(minDateStr)
+      .then(data => {
+        res.json(data);
+      })
+      .catch(err => {
+        res.json({message: err});
+      });
+  } else {
+    blogService.getAllPosts()
+      .then(data => {
+        res.json(data);
+      })
+      .catch(err => {
+        res.json({message: err});
+      });
+  }
 });
-
 
 app.get('/categories', (req, res) => {
   blogService.getCategories()
@@ -121,6 +140,18 @@ app.post('/posts/add', upload.single('featureImage'), (req, res) => {
       res.redirect('/posts/add');
   });
 });
+
+app.get('/post/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  blogService.getPostById(id)
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err => {
+      res.json({message: err});
+    });
+});
+
 
 app.use((req, res) => {
   res.status(404).send(__dirname + "Page Not Found");
