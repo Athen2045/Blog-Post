@@ -16,9 +16,13 @@ const path = require('path');
 const multer = require("multer");
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
+const exphbs = require('express-handlebars');
 
 const app = express();
 const port = process.env.PORT || 8080;
+
+app.engine('.hbs', exphbs.engine({ extname: '.hbs' }));
+app.set('view engine', '.hbs');
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -36,9 +40,10 @@ app.get('/', (req, res) => {
   res.redirect('/about');
 });
 
-app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'about.html'));
+app.get('/about', function(req, res) {
+  res.render('about', { studentName: 'Allan John' });
 });
+
 
 app.get('/blog', (req, res) => {
   blogService.getPublishedPosts()
