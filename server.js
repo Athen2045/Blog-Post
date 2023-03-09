@@ -86,19 +86,19 @@ app.get('/posts', (req, res) => {
     const category = parseInt(req.query.category);
     blogService.getPostsByCategory(category)
       .then(data => {
-        res.json(data);
+        res.render("posts", {posts: data});
       })
       .catch(err => {
-        res.json({message: err});
+        res.render("posts", {message: "no results"});
       });
   } else if (req.query.minDate) {
     const minDateStr = req.query.minDate;
     blogService.getPostsByMinDate(minDateStr)
       .then(data => {
-        res.json(data);
+        res.render("posts", {posts: data});
       })
       .catch(err => {
-        res.json({message: err});
+        res.render("posts", {message: "no results"});
       });
   } else {
     blogService.getAllPosts()
@@ -106,7 +106,7 @@ app.get('/posts', (req, res) => {
         res.json(data);
       })
       .catch(err => {
-        res.json({message: err});
+        res.render("posts", {message: "no results"});
       });
   }
 });
