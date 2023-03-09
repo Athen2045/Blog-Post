@@ -28,19 +28,21 @@ app.engine('.hbs', exphbs.engine({
     return '<li' +
       ((url == app.locals.activeRoute) ? ' class="active" ' : '') +
       '><a href="' + url + '">' + options.fn(this) + '</a></li>';
-  }
+  },
+  equal: function (lvalue, rvalue, options) {
+    if (arguments.length < 3)
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+    if (lvalue != rvalue) {
+        return options.inverse(this);
+    } else {
+        return options.fn(this);
+    }
+}
+
 }
 }));
 app.set('view engine', '.hbs');
-hbs.registerHelper('equal', function(lvalue, rvalue, options) {
-  if (arguments.length < 3)
-    throw new Error("Handlebars Helper equal needs 2 parameters");
-  if (lvalue != rvalue) {
-    return options.inverse(this);
-  } else {
-    return options.fn(this);
-  }
-})
+
 //Middleware function
 app.use(function(req,res,next){
   let route = req.path.substring(1);
@@ -65,7 +67,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/about', function(req, res) {
-  res.render('about', { studentName: 'Allan John' });
+  res.render('about');
 });
 
 
