@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/about', function(req, res) {
-  res.render('about', { studentName: 'Allan John' });
+  res.render('about');
 });
 
 
@@ -96,7 +96,7 @@ app.get('/categories', (req, res) => {
 });
 
 app.get('/post/add', (req, res) => {
-  res.render('addPost', { studentName: 'Allan John' });
+  res.render('addPost');
 });
 
 app.post('/posts/add', upload.single('featureImage'), (req, res) => {
