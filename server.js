@@ -48,7 +48,6 @@ app.use(function(req,res,next){
   app.locals.viewingCategory = req.query.category;
   next();
 });
-
 // Cloudinary Configuration
 cloudinary.config({
   cloud_name: 'dpmjj6lbl',
@@ -61,14 +60,12 @@ const upload = multer();
 
 app.use(express.static('public')); 
 
-
-
 app.get('/', (req, res) => {
   res.redirect('/about');
 });
 
 app.get('/about', function(req, res) {
-  res.render('about');
+  res.render('about', { studentName: 'Allan John' });
 });
 
 
