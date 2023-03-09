@@ -21,8 +21,33 @@ const exphbs = require('express-handlebars');
 const app = express();
 const port = process.env.PORT || 8080;
 
-app.engine('.hbs', exphbs.engine({ extname: '.hbs' }));
+app.engine('.hbs', exphbs.engine({ 
+  extname: '.hbs' ,
+  helpers: {
+  navLink: function(url, options) {
+    return '<li' +
+      ((url == app.locals.activeRoute) ? ' class="active" ' : '') +
+      '><a href="' + url + '">' + options.fn(this) + '</a></li>';
+  }
+}
+}));
 app.set('view engine', '.hbs');
+hbs.registerHelper('equal', function(lvalue, rvalue, options) {
+  if (arguments.length < 3)
+    throw new Error("Handlebars Helper equal needs 2 parameters");
+  if (lvalue != rvalue) {
+    return options.inverse(this);
+  } else {
+    return options.fn(this);
+  }
+})
+//Middleware function
+app.use(function(req,res,next){
+  let route = req.path.substring(1);
+  app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, ""));
+  app.locals.viewingCategory = req.query.category;
+  next();
+});
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -35,6 +60,8 @@ cloudinary.config({
 const upload = multer(); 
 
 app.use(express.static('public')); 
+
+
 
 app.get('/', (req, res) => {
   res.redirect('/about');
