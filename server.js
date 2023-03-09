@@ -96,7 +96,7 @@ app.get('/categories', (req, res) => {
 });
 
 app.get('/post/add', (req, res) => {
-  res.render('addPost', { studentName: 'Allan John' });
+  res.render('addPost');
 });
 
 app.post('/posts/add', upload.single('featureImage'), (req, res) => {
