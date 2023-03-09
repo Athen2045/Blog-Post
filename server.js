@@ -95,8 +95,8 @@ app.get('/categories', (req, res) => {
     });
 });
 
-app.get('/posts/add', function(req, res) {
-  res.sendFile(path.join(__dirname, 'views', 'addPost.html'));
+app.get('/post/add', (req, res) => {
+  res.render('addPost');
 });
 
 app.post('/posts/add', upload.single('featureImage'), (req, res) => {
