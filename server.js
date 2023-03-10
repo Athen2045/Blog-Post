@@ -276,6 +276,11 @@ app.get('/post/:id', (req, res) => {
     });
 });
 
+app.use(function(req, res, next) {
+  res.status(404);
+  res.render('404', {title: '404: Not Found'});
+});
+
 
 app.use((req, res) => {
   res.status(404).send(__dirname + "Page Not Found");
