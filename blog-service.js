@@ -60,17 +60,18 @@ function getCategories() {
 }
 
 function addPost(postData) {
-    return new Promise((resolve, reject) => {
-      if (!postData.published) {
-        postData.published = false;
-      } else {
-        postData.published = true;
-      }
-      postData.id = posts.length + 1;
-      posts.push(postData);
-      resolve(postData);
-    });
-  }
+  return new Promise((resolve, reject) => {
+    if (!postData.published) {
+      postData.published = false;
+    } else {
+      postData.published = true;
+    }
+    postData.id = posts.length + 1;
+    postData.postDate = new Date().toISOString().substr(0, 10); // Add this line to set the postDate to the current date in the format YYYY-MM-DD
+    posts.push(postData);
+    resolve(postData);
+  });
+}
 
   function getPostsByCategory(category) {
     return new Promise((resolve, reject) => {
@@ -105,6 +106,20 @@ function addPost(postData) {
     });
   }
 
+  function getPublishedPostsByCategory(category) {
+    return new Promise((resolve, reject) => {
+      const publishedAndFilteredPosts = posts.filter(
+        (post) => post.published === true && post.category === category
+      );
+      if (publishedAndFilteredPosts.length === 0) {
+        reject("no results returned");
+      } else {
+        resolve(publishedAndFilteredPosts);
+      }
+    });
+  }
+  
+
 module.exports = {
     initialize,
   getPublishedPosts,
@@ -113,5 +128,6 @@ module.exports = {
   addPost,
   getPostsByCategory,
   getPostsByMinDate,
-  getPostById
+  getPostById,
+  getPublishedPostsByCategory
 };

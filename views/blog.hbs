@@ -1,0 +1,54 @@
+<!--blog.hbs-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Latest compiled and minified Bootstrap 3.4.1 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css" />
+      
+    <title>Allan John's Blog</title>
+  </head>
+  <body>
+    <div class="container" style="padding-top:60px">
+        <div class="row">
+            <section class="main col-md-9">
+                {{#if data.post}}
+                <article>
+                    <h2>{{data.post.title}}</h2>
+                    <img src="{{data.post.featureImage}}" alt="{{data.post.title}} image">
+                    {{#safeHTML data.post.body}}
+                    {{/safeHTML}}
+                    <p><strong>Category:</strong> {{data.post.category}}</p>
+                    <p><strong>Last Updated:</strong> {{data.post.postdate}}</p>
+                </article>
+                {{else}}
+                <div class="col-md-12 text-center">
+                    <h2>{{data.message}}</h2>
+                    <p>Please try another Post / Category</p>
+                </div>
+                {{/if}}
+
+                {{#if data.posts}}
+                <h4>Posts</h4>
+                <ul>
+                    {{#each data.posts}}
+                    <li><a href="/blog/{{this.id}}?category={{../viewingCategory}}">{{this.title}}</a></li>
+                    {{/each}}
+                </ul>
+                {{/if}}
+
+                {{#if data.categories}}
+                <h4>Categories</h4>
+                <ul>
+                    {{#each data.categories}}
+                    <li><a href="/blog?category={{this.id}}">{{this.name}}</a></li>
+                    {{/each}}
+                </ul>
+                {{/if}}
+        </div>
+    </div>
+  </body>
+</html>
