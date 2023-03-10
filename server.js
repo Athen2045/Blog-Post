@@ -42,7 +42,6 @@ app.engine('.hbs', exphbs.engine({
 }
 }));
 app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, 'views'));
 
 //Middleware function
 app.use(function(req,res,next){
@@ -104,7 +103,7 @@ app.get('/posts', (req, res) => {
   } else {
     blogService.getAllPosts()
       .then(data => {
-        res.json(data);
+        res.render("posts", {posts: data});
       })
       .catch(err => {
         res.render("posts", {message: "no results"});
@@ -183,7 +182,6 @@ app.get('/post/:id', (req, res) => {
       res.json({message: err});
     });
 });
-
 
 
 app.use((req, res) => {
