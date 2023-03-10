@@ -169,7 +169,7 @@ app.post('/posts/add', upload.single('featureImage'), (req, res) => {
 });
 
 app.get('/post/add', (req, res) => {
-  res.render('addPost');
+  res.render('addPost.hbs');
 });
 
 app.get('/post/:id', (req, res) => {
