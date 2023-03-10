@@ -121,10 +121,6 @@ app.get('/categories', (req, res) => {
     });
 });
 
-app.get('/post/add', (req, res) => {
-  res.render('addPost');
-});
-
 app.post('/posts/add', upload.single('featureImage'), (req, res) => {
   let streamUpload = (req) => {
       return new Promise((resolve, reject) => {
@@ -172,6 +168,10 @@ app.post('/posts/add', upload.single('featureImage'), (req, res) => {
   });
 });
 
+app.get('/post/add', (req, res) => {
+  res.render('addPost');
+});
+
 app.get('/post/:id', (req, res) => {
   const id = parseInt(req.params.id);
   blogService.getPostById(id)
@@ -182,6 +182,7 @@ app.get('/post/:id', (req, res) => {
       res.json({message: err});
     });
 });
+
 
 
 app.use((req, res) => {

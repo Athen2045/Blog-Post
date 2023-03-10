@@ -22,19 +22,19 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <span class="navbar-brand" href="#">WEB322 - Student Name</span>
+          <span class="navbar-brand" href="#">WEB322 - Allan John</span>
         </div>
     
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li><a href="/blog">Blog</a></li>
-            <li class="active"><a href="/about">About</a></li>
+            {{#navLink "/blog"}}Blog{{/navLink}}
+            {{#navLink "/about"}}About{{/navLink}}
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/posts">Posts</a></li>
-            <li><a href="/categories">Categories</a></li>
-            <li><a href="/posts/add">Add Post</a></li>            
+            {{#navLink "/posts"}}Posts{{/navLink}}
+            {{#navLink "/categories"}}Categories{{/navLink}}
+            {{#navLink "/posts/add"}}Add Post{{/navLink}}          
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
