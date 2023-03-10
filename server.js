@@ -42,6 +42,7 @@ app.engine('.hbs', exphbs.engine({
 }
 }));
 app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 //Middleware function
 app.use(function(req,res,next){
