@@ -2,30 +2,55 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <!-- Latest compiled and minified Bootstrap 3.4.1 CSS -->
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-      <link rel="stylesheet" href="/css/main.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Latest compiled and minified Bootstrap 3.4.1 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css" />
       
-      <title>Allan John's Blog</title>
+    <title>Allan John's Blog</title>
   </head>
   <body>
     <div class="container" style="padding-top:60px">
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Posts</h2>
-                <hr/>
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Posts</h2>
+          <hr />
 
-                <ul>
-                    {{#each posts}}
-                        <li>{{this.title}}</li>
-                    {{/each}}
-                </ul>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Post ID</th>
+                  <th>Title</th>
+                  <th>Post Date</th>
+                  <th>Category</th>
+                  <th>Published</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each posts}}
+                <tr>
+                  <td>{{id}}</td>
+                  <td>{{title}}</td>
+                  <td>{{postDate}}</td>
+                  <td><a href="/posts?category={{category}}">{{category}}</a></td>
+                  <td>{{published}}</td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
 
-            </div>
+          {{#unless posts}}
+          <div class="col-md-12 text-center">
+            <strong>{{message}}</strong>
+          </div>
+          {{/unless}}
+
         </div>
+      </div>
     </div>
   </body>
 </html>

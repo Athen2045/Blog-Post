@@ -114,12 +114,13 @@ app.get('/posts', (req, res) => {
 app.get('/categories', (req, res) => {
   blogService.getCategories()
     .then(data => {
-      res.json(data);
+      res.render("categories", {categories: data});
     })
     .catch(err => {
-      res.json({message: err});
+      res.render("categories", {message: "no results"});
     });
 });
+
 
 app.post('/posts/add', upload.single('featureImage'), (req, res) => {
   let streamUpload = (req) => {
