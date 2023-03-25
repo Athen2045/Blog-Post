@@ -24,7 +24,7 @@ const Category = sequelize.define('category', {
 });
 
 // Defining the relationship between Post & Category
-Post.belongsTo(Category, { foreignKey: 'category' });
+Post.belongsTo(Category, { foreignKey: 'category_id', as: 'category' });
 
 function initialize() {
   return new Promise((resolve, reject) => {
