@@ -1,10 +1,10 @@
 /*********************************************************************************
-* *  WEB322 – Assignment 04
-*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
-*  of this assignment has been copied manually or electronically from any other source 
-*  (including 3rd party web sites) or distributed to other students.
+WEB322 – Assignment 05
+*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part of this
+*  assignment has been copied manually or electronically from any other source (including web sites) or 
+*  distributed to other students.
 * 
-*  Name: Allan Mathew John Student ID: 159852219 Date: 18-2-2023
+*  Name: Allan Mathew John Student ID: 159852219 Date: 24-3-2023
 *
 *  Online (Cyclic) Link: https://breakable-hem-ray.cyclic.app
 *
@@ -21,6 +21,8 @@ const stripJs = require('strip-js');
 
 const app = express();
 const port = process.env.PORT || 8080;
+
+app.use(express.urlencoded({extended: true}));
 
 app.engine('.hbs', exphbs.engine({ 
   extname: '.hbs' ,
@@ -41,7 +43,13 @@ app.engine('.hbs', exphbs.engine({
   },
   safeHTML: function(context){
     return stripJs(context);
-  }
+  },
+  formatDate: function(dateObj){
+    let year = dateObj.getFullYear();
+    let month = (dateObj.getMonth() + 1).toString();
+    let day = dateObj.getDate().toString();
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2,'0')}`;
+}
 }
 }));
 app.set('view engine', '.hbs');
@@ -128,27 +136,39 @@ app.get('/posts', (req, res) => {
     const category = parseInt(req.query.category);
     blogService.getPostsByCategory(category)
       .then(data => {
-        res.render("posts", {posts: data});
+        if (data.length > 0) {
+          res.render("posts", {posts: data});
+        } else {
+          res.render("posts", {message: "no results"});
+        }
       })
       .catch(err => {
-        res.render("posts", {message: "no results"});
+        res.render("posts", {message: "error fetching posts"});
       });
   } else if (req.query.minDate) {
     const minDateStr = req.query.minDate;
     blogService.getPostsByMinDate(minDateStr)
       .then(data => {
-        res.render("posts", {posts: data});
+        if (data.length > 0) {
+          res.render("posts", {posts: data});
+        } else {
+          res.render("posts", {message: "no results"});
+        }
       })
       .catch(err => {
-        res.render("posts", {message: "no results"});
+        res.render("posts", {message: "error fetching posts"});
       });
   } else {
     blogService.getAllPosts()
       .then(data => {
-        res.render("posts", {posts: data});
+        if (data.length > 0) {
+          res.render("posts", {posts: data});
+        } else {
+          res.render("posts", {message: "no results"});
+        }
       })
       .catch(err => {
-        res.render("posts", {message: "no results"});
+        res.render("posts", {message: "error fetching posts"});
       });
   }
 });
@@ -156,13 +176,16 @@ app.get('/posts', (req, res) => {
 app.get('/categories', (req, res) => {
   blogService.getCategories()
     .then(data => {
-      res.render("categories", {categories: data});
+      if (data.length > 0) {
+        res.render("categories", {categories: data});
+      } else {
+        res.render("categories", {message: "no results"});
+      }
     })
     .catch(err => {
-      res.render("categories", {message: "no results"});
+      res.render("categories", {message: "error"});
     });
 });
-
 
 app.post('/posts/add', upload.single('featureImage'), (req, res) => {
   let streamUpload = (req) => {
@@ -211,8 +234,66 @@ app.post('/posts/add', upload.single('featureImage'), (req, res) => {
   });
 });
 
+app.get('/categories/add', (req, res) => {
+  res.render('addCategory');
+});
+
+app.post('/categories/add', (req, res) => {
+  const { name, description } = req.body;
+  blogService.addCategory(name, description)
+    .then(() => {
+      res.redirect('/categories');
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('An error occurred while adding the category');
+    });
+});
+
+app.get('/categories/delete/:id', (req, res) => {
+  const id = req.params.id;
+  blogService.deleteCategoryById(id)
+    .then(() => {
+      res.redirect('/categories');
+    })
+    .catch((err) => {
+      res.status(500).send('Unable to Remove Category / Category not found');
+    });
+});
+
+
 app.get('/posts/add', (req, res) => {
-  res.render('addPost');
+  blogService.getCategories()
+    .then(data => {
+      res.render('addPost', {categories: data});
+    })
+    .catch(error => {
+      console.error(error);
+      res.render('addPost', {categories: []});
+    });
+});
+
+app.get('/posts/delete/:id', (req, res) => {
+  const postId = req.params.id;
+
+  blogService.deletePostById(postId)
+    .then(() => {
+      res.redirect('/posts');
+    })
+    .catch(() => {
+      res.status(500).send('Unable to Remove Post / Post not found');
+    });
+});
+
+app.get('/posts/delete/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    await blogService.deletePostById(postId);
+    res.redirect('/posts');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Unable to Remove Post / Post not found');
+  }
 });
 
 app.get('/blog/:id', async (req, res) => {
