@@ -1,12 +1,12 @@
 //blog-service.js
 const Sequelize = require('sequelize');
 
-var sequelize = new Sequelize('babar.db.elephantsql.com', 'userzommepob', 'xm7wMqgdN6v1FFrTI74z-V5jEaRqslmN', {
-  host: 'zommepob',
-  dialect: 'postgres',
+var sequelize = new Sequelize('babar.db.elephantsql.com', 'zommepob', 'xm7wMqgdN6v1FFrTI74z-V5jEaRqslmN', {
+  host: 'babar.db.elephantsql.com',
+  dialect: 'zommepob',
   port: 5432,
   dialectOptions: {
-    ssl: { rejectUnauthorized: false }
+      ssl: { rejectUnauthorized: false }
   },
   query: { raw: true }
 });
