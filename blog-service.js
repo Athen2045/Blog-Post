@@ -2,7 +2,7 @@
 const Sequelize = require('sequelize');
 
 var sequelize = new Sequelize('babar.db.elephantsql.com', 'zommepob', 'xm7wMqgdN6v1FFrTI74z-V5jEaRqslmN', {
-  host: 'babar.db.elephantsql.com',
+  host: 'zommepob',
   dialect: 'postgres',
   port: 5432,
   dialectOptions: {
