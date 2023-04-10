@@ -64,24 +64,36 @@ module.exports.registerUser = function(userData){
 
 module.exports.checkUser = function(userData){
     return new Promise((resolve, reject) => {
-        // Find the user in the database by their userName
-        User.findOne({ userName: userData.userName }, (err, user) => {
-          if (err) {
-            reject(err);
-          } else if (!user) {
-            reject(`User not found: ${userData.userName}`);
-          } else {
-            // Compare the hashed password with the password entered by the user
-            bcrypt.compare(userData.password, user.password).then((result) => {
-              if (result === true) {
+      // Find the user in the database by their userName
+      User.find({ userName: userData.userName }).then((users) => {
+        if (users.length === 0) {
+          reject(`Unable to find user: ${userData.userName}`);
+        } else {
+          const user = users[0];
+          // Compare the hashed password with the password entered by the user
+          bcrypt.compare(userData.password, user.password).then((result) => {
+            if (result === true) {
+              // Update the user's login history
+              const loginEntry = {
+                dateTime: (new Date()).toString(),
+                userAgent: userData.userAgent
+              };
+              user.loginHistory.push(loginEntry);
+              User.updateOne({ userName: user.userName }, { $set: { loginHistory: user.loginHistory } }).then(() => {
                 resolve(user);
-              } else {
-                reject(`Incorrect Password for user: ${userData.userName}`);
-              }
-            }).catch((err) => {
-              reject(err);
-            });
-          }
-        });
+              }).catch((err) => {
+                reject(`There was an error verifying the user: ${err}`);
+              });
+            } else {
+              reject(`Incorrect Password for user: ${userData.userName}`);
+            }
+          }).catch((err) => {
+            reject(err);
+          });
+        }
+      }).catch((err) => {
+        reject(`Unable to find user: ${userData.userName}`);
       });
-};
+    });
+  };
+  
