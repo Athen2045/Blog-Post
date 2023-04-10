@@ -330,7 +330,7 @@ app.get('/register', function(req, res){
 
 // POST /register
 app.post('/register', function(req, res){
-  authData.RegisterUser(req.body).then(function(){
+  authData.registerUser(req.body).then(function(){
       res.render('register', {title: 'Register', successMessage: 'User created'});
   }).catch(function(err){
       res.render('register', {title: 'Register', errorMessage: err, userName: req.body.userName});
@@ -340,7 +340,7 @@ app.post('/register', function(req, res){
 // POST /login
 app.post('/login', function(req, res){
   req.body.userAgent = req.get('User-Agent');
-  authData.CheckUser(req.body).then(function(user){
+  authData.checkUser(req.body).then(function(user){
       req.session.user = {
           userName: user.userName,
           email: user.email,
