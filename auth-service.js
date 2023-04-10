@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 var mongoose = require("mongoose");
-let userSchema = new mongoose.Schema({
+var Schema = mongoose.Schema;
+let userSchema = new Schema({
     userName: { type: String, unique: true },
     password: String,
     email: String,
@@ -14,7 +15,7 @@ let User; // to be defined on new connection (see initialize)
 
 module.exports.initialize = function () {
     return new Promise(function (resolve, reject) {
-        let db = mongoose.createConnection("mongodb+srv://allanmj2045:<G8RrJr3UE3r8BuP>@senecaweb.tdqursh.mongodb.net/?retryWrites=true&w=majority");
+        let db = mongoose.createConnection("mongodb+srv://allanmj2045:G8RrJr3UE3r8BuP@senecaweb.tdqursh.mongodb.net/?retryWrites=true&w=majority");
 
         db.on('error', (err)=>{
             reject(err); // reject the promise with the provided error
