@@ -1,0 +1,19 @@
+{{!-- Show error message if it exists --}}
+{{#if errorMessage}}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> {{errorMessage}}
+    </div>
+{{/if}}
+
+<h2>Login</h2>
+<form method="POST" action="/login">
+    <div class="form-group">
+        <label for="userName">User Name:</label>
+        <input type="text" class="form-control" id="userName" name="userName" placeholder="User Name" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>

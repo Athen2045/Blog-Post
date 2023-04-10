@@ -1,10 +1,9 @@
 /*********************************************************************************
-WEB322 – Assignment 05
+*  WEB322 – Assignment 06
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part of this
 *  assignment has been copied manually or electronically from any other source (including web sites) or 
 *  distributed to other students.
-* 
-*  Name: Allan Mathew John Student ID: 159852219 Date: 24-3-2023
+*  Name: Allan Mathew John Student ID: 159852219 Date: 7-4-2023
 *
 *  Online (Cyclic) Link: https://breakable-hem-ray.cyclic.app
 *
@@ -18,6 +17,8 @@ const streamifier = require('streamifier');
 const exphbs = require("express-handlebars");
 const path = require("path");
 const stripJs = require('strip-js');
+const authData = require('auth-service');
+const clientSessions = require('client-sessions');
 
 const app = express();
 
@@ -75,6 +76,26 @@ app.use(function(req,res,next){
     next();
 });
 
+app.use(clientSessions({
+  cookieName: 'session', // cookie name, can be anything
+  secret: 'week10example_web322', // a random string for better security
+  duration: 24 * 60 * 60 * 1000, // how long the session will stay valid in milliseconds (1 day)
+  activeDuration: 1000 * 60 * 5 // if expiresIn < activeDuration, the session will be extended by activeDuration milliseconds
+}));
+
+app.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
+function ensureLogin(req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+}
+
 app.get('/', (req, res) => {
     res.redirect("/blog");
 });
@@ -131,7 +152,7 @@ app.get('/blog', async (req, res) => {
 
 });
 
-app.get('/posts', (req, res) => {
+app.get('/posts', ensureLogin,(req, res) => {
 
     let queryPromise = null;
 
@@ -151,7 +172,7 @@ app.get('/posts', (req, res) => {
 
 });
 
-app.post("/posts/add", upload.single("featureImage"), (req,res)=>{
+app.post("/posts/add",ensureLogin, upload.single("featureImage"), (req,res)=>{
 
     if(req.file){
         let streamUpload = (req) => {
@@ -194,7 +215,7 @@ app.post("/posts/add", upload.single("featureImage"), (req,res)=>{
     }   
 });
 
-app.get('/posts/add', (req, res) => {
+app.get('/posts/add', ensureLogin,(req, res) => {
     blogData.getCategories().then((data)=>{
         res.render("addPost", {categories: data});
      }).catch((err) => {
@@ -203,7 +224,7 @@ app.get('/posts/add', (req, res) => {
     });
 });
 
-app.get("/posts/delete/:id", (req,res)=>{
+app.get("/posts/delete/:id", ensureLogin,(req,res)=>{
     blogData.deletePostById(req.params.id).then(()=>{
       res.redirect("/posts");
     }).catch((err)=>{
@@ -211,7 +232,7 @@ app.get("/posts/delete/:id", (req,res)=>{
     });
 });
 
-app.get('/post/:id', (req,res)=>{
+app.get('/post/:id', ensureLogin,(req,res)=>{
     blogData.getPostById(req.params.id).then(data=>{
         res.json(data);
     }).catch(err=>{
@@ -219,7 +240,7 @@ app.get('/post/:id', (req,res)=>{
     });
 });
 
-app.get('/blog/:id', async (req, res) => {
+app.get('/blog/:id', ensureLogin,async (req, res) => {
 
     // Declare an object to store properties for the view
     let viewData = {};
@@ -269,7 +290,7 @@ app.get('/blog/:id', async (req, res) => {
     res.render("blog", {data: viewData})
 });
 
-app.get('/categories', (req, res) => {
+app.get('/categories',ensureLogin, (req, res) => {
     blogData.getCategories().then((data => {
         (data.length > 0) ? res.render("categories", {categories: data}) : res.render("categories",{ message: "no results" });
     })).catch(err => {
@@ -277,11 +298,11 @@ app.get('/categories', (req, res) => {
     });
 });
 
-app.get('/categories/add', (req, res) => {
+app.get('/categories/add',ensureLogin, (req, res) => {
     res.render("addCategory");
 });
 
-app.post('/categories/add', (req,res)=>{
+app.post('/categories/add',ensureLogin, (req,res)=>{
     blogData.addCategory(req.body).then(category=>{
         res.redirect("/categories");
     }).catch(err=>{
@@ -289,7 +310,7 @@ app.post('/categories/add', (req,res)=>{
     })
 });
 
-app.get("/categories/delete/:id", (req,res)=>{
+app.get("/categories/delete/:id",ensureLogin, (req,res)=>{
     blogData.deleteCategoryById(req.params.id).then(()=>{
       res.redirect("/categories");
     }).catch((err)=>{
@@ -297,14 +318,62 @@ app.get("/categories/delete/:id", (req,res)=>{
     });
 });
 
+// GET /login
+app.get('/login', function(req, res){
+  res.render('login', {title: 'Login'});
+});
+
+// GET /register
+app.get('/register', function(req, res){
+  res.render('register', {title: 'Register'});
+});
+
+// POST /register
+app.post('/register', function(req, res){
+  authData.RegisterUser(req.body).then(function(){
+      res.render('register', {title: 'Register', successMessage: 'User created'});
+  }).catch(function(err){
+      res.render('register', {title: 'Register', errorMessage: err, userName: req.body.userName});
+  });
+});
+
+// POST /login
+app.post('/login', function(req, res){
+  req.body.userAgent = req.get('User-Agent');
+  authData.CheckUser(req.body).then(function(user){
+      req.session.user = {
+          userName: user.userName,
+          email: user.email,
+          loginHistory: user.loginHistory
+      };
+      res.redirect('/posts');
+  }).catch(function(err){
+      res.render('login', {title: 'Login', errorMessage: err, userName: req.body.userName});
+  });
+});
+
+// GET /logout
+app.get('/logout', function(req, res){
+  req.session.reset();
+  res.redirect('/');
+});
+
+// GET /userHistory
+app.get('/userHistory', ensureLogin, function(req, res){
+  res.render('userHistory', {title: 'User History'});
+});
+
+
 app.use((req, res) => {
     res.status(404).render("404");
 })
 
-blogData.initialize().then(() => {
-    app.listen(HTTP_PORT, () => {
-        console.log('server listening on: ' + HTTP_PORT);
+blogData.initialize()
+.then(authData.initialize)
+.then(function(){
+    app.listen(HTTP_PORT, function(){
+        console.log("app listening on: " + HTTP_PORT)
     });
-}).catch((err) => {
-    console.log(err);
-})
+}).catch(function(err){
+    console.log("unable to start server: " + err);
+});
