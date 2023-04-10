@@ -29,26 +29,38 @@ module.exports.initialize = function () {
 
 module.exports.registerUser = function(userData){
     return new Promise(function(resolve, reject){
+        // Check if the passwords match
+        if (userData.password !== userData.password2) {
+            reject('Passwords do not match');
+            return;
+        }
+        
+        // Hash the password
         bcrypt.hash(userData.password, 10)
-      .then(hash => {
-        // Replace the user entered password with its hashed version
-        userData.password = hash;
+        .then(hash => {
+            // Replace the user entered password with its hashed version
+            userData.password = hash;
 
-        // Save userData to the database
-        const user = new User(userData);
-        user.save()
-          .then(() => {
-            resolve();
-          })
-          .catch(err => {
-            reject(err.message);
-          });
-      })
-      .catch(err => {
-        reject('There was an error encrypting the password');
-      });
-  });
+            // Save userData to the database
+            const newUser = new User(userData);
+            newUser.save()
+            .then(() => {
+                resolve();
+            })
+            .catch(err => {
+                if (err.code === 11000) {
+                    reject('User Name already taken');
+                } else {
+                    reject(`There was an error creating the user: ${err}`);
+                }
+            });
+        })
+        .catch(err => {
+            reject('There was an error encrypting the password');
+        });
+    });
 };
+
 
 module.exports.checkUser = function(userData){
     return new Promise((resolve, reject) => {
