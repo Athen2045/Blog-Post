@@ -1,9 +1,5 @@
 /*********************************************************************************
-*  WEB322 – Assignment 06
-*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part of this
-*  assignment has been copied manually or electronically from any other source (including web sites) or 
-*  distributed to other students.
-*  Name: Allan Mathew John Student ID: 159852219 Date: 7-4-2023
+*  Name: Allan Mathew John 
 *
 *  Online (Cyclic) Link: https://breakable-hem-ray.cyclic.app
 *
