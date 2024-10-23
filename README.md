@@ -1,4 +1,4 @@
-# Web322 Application
+# Blog-Post Application
 
 ## Project Overview
 
