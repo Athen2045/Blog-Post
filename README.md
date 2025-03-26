@@ -76,7 +76,7 @@ For a full list of dependencies, see the [`package.json`](./package.json) file.
 
 6. The application will run on http://localhost:3000.
 
-##API Endpoints
+## API Endpoints
 - POST /register: Register a new user.
 - POST /login: Log in an existing user.
 - POST /upload: Upload files to Cloudinary.
